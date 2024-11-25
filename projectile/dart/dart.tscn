@@ -1,0 +1,66 @@
+[gd_scene load_steps=9 format=3 uid="uid://bma8tc2lw0x42"]
+
+[ext_resource type="Script" path="res://projectile/projectile.gd" id="1_b7f57"]
+[ext_resource type="Texture2D" uid="uid://u3anqsin70ku" path="res://projectile/dart/dart.png" id="2_fx4sx"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nstbe"]
+atlas = ExtResource("2_fx4sx")
+region = Rect2(0, 0, 22, 9)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4t0el"]
+atlas = ExtResource("2_fx4sx")
+region = Rect2(22, 0, 22, 9)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_noyds"]
+atlas = ExtResource("2_fx4sx")
+region = Rect2(44, 0, 22, 9)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wm6ry"]
+atlas = ExtResource("2_fx4sx")
+region = Rect2(66, 0, 22, 9)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_byilk"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nstbe")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4t0el")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_noyds")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wm6ry")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ecbfq"]
+radius = 3.0
+height = 20.0
+
+[node name="dart" type="CharacterBody2D"]
+script = ExtResource("1_b7f57")
+speed = 200.0
+range = 1000.0
+damage = 1
+point_sprite = true
+sprite_path = NodePath("AnimatedSprite2D")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+sprite_frames = SubResource("SpriteFrames_byilk")
+autoplay = "default"
+frame_progress = 0.293807
+speed_scale = 3.0
+
+[node name="hitbox" type="Area2D" parent="."]
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="hitbox"]
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_ecbfq")

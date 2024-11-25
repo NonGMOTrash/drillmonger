@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://bb0l0gj6snsuh"]
+
+[ext_resource type="AudioStream" uid="uid://bvhffouiwb1nu" path="res://entity/player/hit.ogg" id="1_q58qm"]
+[ext_resource type="Script" path="res://sounds/sound.gd" id="2_p0wm2"]
+
+[node name="glass_Shatter" type="AudioStreamPlayer"]
+process_mode = 3
+stream = ExtResource("1_q58qm")
+autoplay = true
+script = ExtResource("2_p0wm2")
+pitch_shift = 0.03
+
+[connection signal="finished" from="." to="." method="_on_finished"]

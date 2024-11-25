@@ -1,0 +1,60 @@
+[gd_scene load_steps=8 format=3 uid="uid://dgffpyf367wco"]
+
+[ext_resource type="Script" path="res://entity/player/player.gd" id="1_5ra3n"]
+[ext_resource type="Texture2D" uid="uid://dqimqeoablny4" path="res://icon.svg" id="2_g6qjm"]
+[ext_resource type="PackedScene" uid="uid://b63edxmneogsg" path="res://components/hurtbox/hurtbox.tscn" id="3_ru3mw"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_dou7l"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_nwf4m"]
+radius = 31.0644
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ag04q"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_tk8um"]
+font_size = 50
+font_color = Color(1, 0, 0, 1)
+
+[node name="player" type="CharacterBody2D"]
+motion_mode = 1
+script = ExtResource("1_5ra3n")
+accel = null
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.35, 0.35)
+texture = ExtResource("2_g6qjm")
+
+[node name="hurtbox" parent="." instance=ExtResource("3_ru3mw")]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="hurtbox"]
+shape = SubResource("CircleShape2D_dou7l")
+
+[node name="hitbox" type="Area2D" parent="."]
+visible = false
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="hitbox"]
+position = Vector2(0, 6)
+shape = SubResource("CircleShape2D_nwf4m")
+
+[node name="parrybox" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+monitoring = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="parrybox"]
+shape = SubResource("CircleShape2D_ag04q")
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="health" type="Label" parent="HUD"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -23.0
+offset_right = 40.0
+grow_vertical = 0
+label_settings = SubResource("LabelSettings_tk8um")
+
+[connection signal="tree_exiting" from="." to="." method="_on_tree_exiting"]
+[connection signal="area_entered" from="parrybox" to="." method="_on_parrybox_area_entered"]

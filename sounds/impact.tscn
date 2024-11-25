@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://mtl01hftxcc4"]
+
+[ext_resource type="AudioStream" uid="uid://uugg3wfy4ssj" path="res://impact.ogg" id="1_qu0ny"]
+[ext_resource type="Script" path="res://sounds/sound.gd" id="2_nrwte"]
+
+[node name="impact" type="AudioStreamPlayer"]
+process_mode = 3
+stream = ExtResource("1_qu0ny")
+autoplay = true
+script = ExtResource("2_nrwte")
+pitch_shift = 0.15
+
+[connection signal="finished" from="." to="." method="_on_finished"]

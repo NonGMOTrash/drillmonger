@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://b63edxmneogsg"]
+
+[ext_resource type="Script" path="res://components/hurtbox/hurtbox.gd" id="1_ebkww"]
+[ext_resource type="PackedScene" uid="uid://mtl01hftxcc4" path="res://sounds/impact.tscn" id="2_orvsf"]
+
+[node name="hurtbox" type="Area2D"]
+collision_mask = 2
+script = ExtResource("1_ebkww")
+sfx_onhit = ExtResource("2_orvsf")
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]
