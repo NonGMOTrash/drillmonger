@@ -37,7 +37,7 @@ func _physics_process(delta: float) -> void:
 		global_position.y = MAP_BORDER.y
 
 func _on_hitbox_area_entered(area: Area2D) -> void:
-	if area.get_parent() == source and distance_traveled < 20:
+	if area.get_parent() == source and distance_traveled < 20 or area.monitorable == false:
 		return
 	else:
 		queue_free()

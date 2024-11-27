@@ -11,6 +11,8 @@ var direction: Vector2
 var health: int = 3
 var damage: int = 1
 
+signal crossed_map_border
+
 func _physics_process(delta: float) -> void:
 	if direction != Vector2.ZERO:
 		if velocity.x < top_speed and velocity.x > -top_speed:
@@ -24,13 +26,17 @@ func _physics_process(delta: float) -> void:
 	
 	if global_position.x > MAP_BORDER.x:
 		global_position.x = 0
+		crossed_map_border.emit()
 	if global_position.x < 0:
 		global_position.x = MAP_BORDER.x
+		crossed_map_border.emit()
 	
 	if global_position.y > MAP_BORDER.y:
 		global_position.y = 0
+		crossed_map_border.emit()
 	if global_position.y < 0:
 		global_position.y = MAP_BORDER.y
+		crossed_map_border.emit()
 
 func die() -> void:
 	queue_free()

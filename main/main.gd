@@ -62,7 +62,7 @@ func _physics_process(delta: float) -> void:
 
 func clear_room(was_hit: bool = false):
 	if not was_hit:
-		hitstop(6)
+		hitstop(8)
 	
 	if was_hit:
 		bg_animation.play("flash_red")
@@ -106,7 +106,7 @@ func new_room(was_hit: bool = false):
 					expected_time = 0.92
 				ENEMY_TYPES.MAGE:
 					enemy = MAGE.instantiate() as Mage
-					cost = 4.5
+					cost = 5.5
 					expected_time = 2.5
 			if cost <= difficulty_budget or difficulty_budget < 1.0:
 				break #                           cheapest cost /\
@@ -131,7 +131,7 @@ func new_room(was_hit: bool = false):
 			break
 	
 	enemy_count = enemies_left
-	room_time_expected = pow(room_time_expected, 1.2)
+	#room_time_expected = pow(room_time_expected, 1.2)
 
 func on_enemy_killed() -> void:
 	bg_animation.play("flash_orange_quick")
@@ -149,6 +149,7 @@ func on_enemy_killed() -> void:
 func show_results() -> void:
 	#process_mode = PROCESS_MODE_ALWAYS
 	#room.process_mode = PROCESS_MODE_PAUSABLE
+	hitstop_timer.process_mode = Node.PROCESS_MODE_DISABLED
 	hud.visible = false
 	get_tree().paused = true
 	
@@ -160,7 +161,7 @@ func show_results() -> void:
 	results_button_again.grab_focus()
 
 func hitstop(frames: int) -> void:
-	if is_inside_tree() and is_instance_valid(hitstop_timer):
+	if is_inside_tree() and hitstop_timer.is_inside_tree():
 		hitstop_timer.wait_time = (frames as float)/60.0
 		hitstop_timer.start()
 		get_tree().paused = true

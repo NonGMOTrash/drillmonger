@@ -8,6 +8,8 @@ const DASH_COOLDOWN: float = 0.01
 const DASH_STRENGTH: float = 1000.0
 const PARRY_WINDOW: float = 0.016
 const PARRY_LOCKOUT: float = 0.1
+const PARRY_INVULN_TIME: float = 0.05
+const CROSSOVER_INVULN_TIME: float = 0.15
 const DAMAGE: int = 1
 const HIT_KNOCKBACK: float = 700.0
 
@@ -26,6 +28,9 @@ var stored_direction: Vector2 = Vector2.ZERO
 var parrying_time: float = 0
 var parrying_lockout: float = 0
 var parry_success: bool = false
+var invuln_time: float = 0
+var recent_crossovers: int = 0 # counts the crossovers in the last second to prevent cheesing with the invuln
+var crossover_reset_time: float = 1.0
 
 func _init() -> void:
 	accel = 250 * 60
@@ -100,10 +105,20 @@ func _physics_process(delta: float) -> void:
 	elif direction.x < 0:
 		sprite.flip_h = true
 	
+	if hurtbox.monitoring == false and invuln_time > 0:
+		invuln_time -= delta
+		if invuln_time <= 0:
+			hurtbox.monitoring = true
+	
+	crossover_reset_time -= delta
+	if crossover_reset_time <= 0:
+		crossover_reset_time = 2.0
+		recent_crossovers = 0
+	
 	super._physics_process(delta)
 
 func _on_parrybox_area_entered(area: Area2D) -> void:
-	if parrying_time <= 0 or not area.get_parent() is Projectile:
+	if parrying_time <= 0 or (not area.get_parent() is Projectile) or invuln_time > 0:
 		return
 	else:
 		var projectile: Projectile = area.get_parent()
@@ -117,7 +132,9 @@ func _on_parrybox_area_entered(area: Area2D) -> void:
 		var particle: Particle = PARTICLE_PARRY.instantiate()
 		particle.global_position = global_position
 		get_tree().current_scene.add_child(particle)
-		main.room_time -= 0.5
+		if main.room_time <= main.room_time_expected:
+			main.room_time -= 0.5
+			main.hud_animation.play("parry")
 		
 		var sound: Sound = SFX_PARRY.instantiate()
 		get_tree().current_scene.add_child(sound)
@@ -128,12 +145,13 @@ func _on_parrybox_area_entered(area: Area2D) -> void:
 			if overlapping_hitbox.get_parent() is Projectile:
 				overlapping_hitbox.get_parent().queue_free()
 		
-		hurtbox.monitoring = true
+		start_invuln(PARRY_INVULN_TIME)
 
 func _on_hitbox_area_entered(area: Area2D) -> void:
 	if area.get_parent() is Entity and area.get_parent() != self:
 		velocity = -global_position.direction_to(area.get_parent().global_position).normalized() * HIT_KNOCKBACK
 		main.hitstop(3)
+		start_invuln(0.05)
 
 func _on_hitstop_timeout() -> void:
 	if health > 0:
@@ -152,5 +170,15 @@ func _on_hurtbox_was_hit(_from_pos: Vector2) -> void:
 		main.intensity_mult = 0.6
 		main.new_room(true)
 
+func _on_crossed_map_border() -> void:
+	recent_crossovers += 1
+	if recent_crossovers < 5:
+		start_invuln(CROSSOVER_INVULN_TIME)
+
 func die() -> void:
 	main.show_results()
+
+func start_invuln(duration: float) -> void:
+	hurtbox.set_deferred("monitoring", false)
+	hurtbox.set_deferred("monitorable", false)
+	invuln_time = duration

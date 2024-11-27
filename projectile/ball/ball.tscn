@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://coj6bef28fbl2"]
 
-[ext_resource type="Script" path="res://projectile/projectile.gd" id="1_r52qf"]
-[ext_resource type="Texture2D" uid="uid://cmo42mxfphqh7" path="res://projectile/pellet/ball.png" id="2_rq61q"]
+[ext_resource type="Script" path="res://projectile/projectile.gd" id="1_2yf1c"]
+[ext_resource type="Texture2D" uid="uid://cmo42mxfphqh7" path="res://projectile/ball/ball.png" id="2_1vj3w"]
 
 [sub_resource type="Animation" id="Animation_6axt0"]
 length = 0.001
@@ -44,15 +44,15 @@ _data = {
 [sub_resource type="CircleShape2D" id="CircleShape2D_rppvy"]
 radius = 6.0
 
-[node name="pellet" type="CharacterBody2D"]
-script = ExtResource("1_r52qf")
+[node name="ball" type="CharacterBody2D"]
+script = ExtResource("1_2yf1c")
 speed = 400.0
 range = 2000.0
 damage = 1
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture_filter = 1
-texture = ExtResource("2_rq61q")
+texture = ExtResource("2_1vj3w")
 offset = Vector2(0, 1)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Sprite2D"]

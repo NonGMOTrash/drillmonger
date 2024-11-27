@@ -210,6 +210,7 @@ libraries = {
 [node name="AudioListener2D" type="AudioListener2D" parent="."]
 current = true
 
+[connection signal="crossed_map_border" from="." to="." method="_on_crossed_map_border"]
 [connection signal="tree_exiting" from="." to="." method="_on_tree_exiting"]
 [connection signal="was_hit" from="hurtbox" to="." method="_on_hurtbox_was_hit"]
 [connection signal="area_entered" from="hitbox" to="." method="_on_hitbox_area_entered"]

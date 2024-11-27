@@ -12,7 +12,7 @@ const SHOT_RECOIL: float = 600.0
 
 var player: Player
 
-var projectile: PackedScene = preload("res://projectile/pellet/pellet.tscn")
+var projectile: PackedScene = preload("res://projectile/ball/ball.tscn")
 var startup_time: float = STARTUP_TIME
 var shot_time: float = 0.0
 
