@@ -12,6 +12,7 @@ const DAMAGE: int = 1
 const HIT_KNOCKBACK: float = 700.0
 
 @onready var hitbox: Area2D = $hitbox
+@onready var hitbox_cshape: CollisionShape2D = $hitbox/CollisionShape2D
 @onready var hurtbox: Area2D = $hurtbox
 @onready var parrybox: Area2D = $parrybox
 @onready var sprite: Sprite2D = $Sprite2D
@@ -46,8 +47,9 @@ func _physics_process(delta: float) -> void:
 	else:
 		cooldown_dash -= delta
 	
-	hitbox.monitoring = (velocity.length() > 400.0)
-	hitbox.monitorable = hitbox.monitoring
+	hitbox_cshape.disabled = (velocity.length() < 400.0)
+	#hitbox.monitoring = (velocity.length() > 400.0)
+	#hitbox.monitorable = hitbox.monitoring
 	
 	if parrying_time > 0:
 		sprite.modulate = Color.YELLOW
