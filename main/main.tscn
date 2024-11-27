@@ -1,7 +1,8 @@
-[gd_scene load_steps=21 format=3 uid="uid://byfy2yyv80xv3"]
+[gd_scene load_steps=24 format=3 uid="uid://byfy2yyv80xv3"]
 
 [ext_resource type="PackedScene" uid="uid://dgffpyf367wco" path="res://entity/player/player.tscn" id="1_1wxa3"]
 [ext_resource type="Script" path="res://main/main.gd" id="1_fehwr"]
+[ext_resource type="Texture2D" uid="uid://ci06toft7c4lt" path="res://entity/player/heart.png" id="3_57k08"]
 [ext_resource type="AudioStream" uid="uid://xisy7kfiglep" path="res://Never Stop.mp3" id="3_81120"]
 
 [sub_resource type="Animation" id="Animation_1nvj5"]
@@ -107,91 +108,184 @@ _data = {
 
 [sub_resource type="LabelSettings" id="LabelSettings_0ip8q"]
 
+[sub_resource type="LabelSettings" id="LabelSettings_oanni"]
+font_size = 64
+font_color = Color(1, 0, 0.483334, 1)
+
 [sub_resource type="LabelSettings" id="LabelSettings_1l0fc"]
 font_size = 32
 
-[sub_resource type="Animation" id="Animation_y6ban"]
+[sub_resource type="Animation" id="Animation_7ipfa"]
 length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("nice:position")
+tracks/0/path = NodePath("anchor/bonus:modulate")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(0, -25)]
+"values": [Color(1, 0.301961, 0, 1)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("nice:self_modulate")
+tracks/1/path = NodePath("anchor:position")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Color(1, 1, 1, 1)]
+"values": [Vector2(0, 0)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("1:position")
+tracks/2/path = NodePath("HBoxContainer/anchor/heal:modulate")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(73, 355)]
+"values": [Color(1, 0.3, 0, 1)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("HBoxContainer/anchor:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("anchor/bonus:text")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": ["+0.5"]
 }
 
-[sub_resource type="Animation" id="Animation_mdvwb"]
+[sub_resource type="Animation" id="Animation_hys7r"]
 resource_name = "quick_clear"
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("nice:position")
+tracks/0/path = NodePath("anchor/bonus:modulate")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.2),
-"transitions": PackedFloat32Array(4.59479, 1),
+"times": PackedFloat32Array(0, 0.2, 0.9, 1),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(0, -15), Vector2(0, 15)]
+"values": [Color(1, 0.3, 0, 0), Color(1, 0.3, 0, 1), Color(1, 0.3, 0, 1), Color(1, 0.3, 0, 0)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("nice:self_modulate")
+tracks/1/path = NodePath("anchor:position")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.7, 1),
-"transitions": PackedFloat32Array(1, 1.56917, 1),
+"times": PackedFloat32Array(0, 0.2, 0.9, 1),
+"transitions": PackedFloat32Array(0.267943, 1, 1, 1),
 "update": 0,
-"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+"values": [Vector2(24, -20), Vector2(24, 6), Vector2(24, 6), Vector2(24, 18)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("1:position")
+tracks/2/path = NodePath("HBoxContainer/anchor/heal:modulate")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.2, 0.7, 1),
-"transitions": PackedFloat32Array(0.196146, 1, 2, 1),
+"times": PackedFloat32Array(0, 0.2, 0.9, 1),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(73, 355), Vector2(73, 320), Vector2(73, 320), Vector2(73, 355)]
+"values": [Color(1, 0.3, 0, 0), Color(1, 0.3, 0, 1), Color(1, 0.3, 0, 1), Color(1, 0.3, 0, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("HBoxContainer/anchor:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.9, 1),
+"transitions": PackedFloat32Array(0.307786, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 40), Vector2(0, 0), Vector2(0, 0), Vector2(0, 40)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("anchor/bonus:text")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": ["nice!"]
 }
 
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_ku2sw"]
+[sub_resource type="Animation" id="Animation_gxpes"]
+resource_name = "parry"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("anchor/bonus:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.433333, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Color(1, 0.3, 0, 0), Color(1, 0.3, 0, 1), Color(1, 0.3, 0, 1), Color(1, 0.3, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("anchor:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.433333, 0.5),
+"transitions": PackedFloat32Array(0.267943, 1, 1, 1),
+"update": 0,
+"values": [Vector2(24, -20), Vector2(24, 6), Vector2(24, 6), Vector2(24, 18)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("anchor/bonus:text")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": ["+0.5"]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_dde3j"]
 _data = {
-"RESET": SubResource("Animation_y6ban"),
-"quick_clear": SubResource("Animation_mdvwb")
+"RESET": SubResource("Animation_7ipfa"),
+"parry": SubResource("Animation_gxpes"),
+"quick_clear": SubResource("Animation_hys7r")
 }
 
 [sub_resource type="LabelSettings" id="LabelSettings_fqe47"]
@@ -271,7 +365,7 @@ position = Vector2(321, 139)
 [node name="room" type="Node" parent="."]
 
 [node name="anchor" type="Node2D" parent="."]
-position = Vector2(320, 180)
+position = Vector2(320, 176.667)
 
 [node name="room_number" type="Label" parent="anchor"]
 z_index = -99
@@ -311,52 +405,70 @@ libraries = {
 "": SubResource("AnimationLibrary_bsr4p")
 }
 
-[node name="timer_label" type="Label" parent="."]
+[node name="HUD" type="VBoxContainer" parent="."]
+z_index = -10
+offset_left = 5.0
+offset_top = 268.0
+offset_right = 82.0
+offset_bottom = 360.0
+size_flags_horizontal = 0
+size_flags_vertical = 8
+alignment = 2
+
+[node name="anchor" type="Node2D" parent="HUD"]
+
+[node name="bonus" type="Label" parent="HUD/anchor"]
+modulate = Color(1, 0.301961, 0, 1)
+texture_filter = 1
+offset_top = -2.0
+offset_right = 27.0
+offset_bottom = 12.0
+text = "+0.5"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="timer_label" type="Label" parent="HUD"]
 modulate = Color(1, 0, 0.566667, 1)
 texture_filter = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 1.0
-offset_top = 2.0
-offset_right = 640.0
-offset_bottom = 16.0
-grow_horizontal = 2
-grow_vertical = 2
+layout_mode = 2
 text = "0:01:00"
 label_settings = SubResource("LabelSettings_0ip8q")
 horizontal_alignment = 1
 
-[node name="quick_clear" type="Node" parent="."]
+[node name="HBoxContainer" type="HBoxContainer" parent="HUD"]
+layout_mode = 2
 
-[node name="nice" type="Label" parent="quick_clear"]
-modulate = Color(1, 0.301961, 0, 1)
+[node name="health" type="Label" parent="HUD/HBoxContainer"]
 texture_filter = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_top = -25.0
-offset_right = 1.0
-offset_bottom = -9.0
-grow_horizontal = 2
-text = "nice!"
+layout_mode = 2
+text = "3"
+label_settings = SubResource("LabelSettings_oanni")
 horizontal_alignment = 1
 vertical_alignment = 2
 
-[node name="1" type="Label" parent="quick_clear"]
+[node name="TextureRect" type="TextureRect" parent="HUD/HBoxContainer"]
+texture_filter = 1
+layout_mode = 2
+texture = ExtResource("3_57k08")
+stretch_mode = 2
+
+[node name="anchor" type="Node2D" parent="HUD/HBoxContainer"]
+
+[node name="heal" type="Label" parent="HUD/HBoxContainer/anchor"]
 modulate = Color(1, 0.3, 0, 1)
 texture_filter = 1
-offset_left = 73.0
-offset_top = 355.0
-offset_right = 112.0
-offset_bottom = 395.0
+offset_left = 81.0
+offset_right = 109.0
+offset_bottom = 56.0
+size_flags_vertical = 1
 text = "+1"
 label_settings = SubResource("LabelSettings_1l0fc")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="quick_clear"]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="HUD"]
 libraries = {
-"": SubResource("AnimationLibrary_ku2sw")
+"": SubResource("AnimationLibrary_dde3j")
 }
 
 [node name="results" type="ColorRect" parent="."]
@@ -382,9 +494,9 @@ anchor_left = 0.5
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -95.0
-offset_top = -360.0
+offset_top = -999.0
 offset_right = 99.0
-offset_bottom = -360.0
+offset_bottom = -999.0
 grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
@@ -425,5 +537,10 @@ volume_db = -6.0
 autoplay = true
 parameters/looping = true
 
+[node name="hitstop_timer" type="Timer" parent="."]
+process_mode = 2
+one_shot = true
+
 [connection signal="pressed" from="results/VBoxContainer/again" to="." method="_on_again_pressed"]
 [connection signal="pressed" from="results/VBoxContainer/title" to="." method="_on_title_pressed"]
+[connection signal="timeout" from="hitstop_timer" to="." method="_on_hitstop_timer_timeout"]

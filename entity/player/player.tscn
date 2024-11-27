@@ -1,10 +1,9 @@
-[gd_scene load_steps=20 format=3 uid="uid://dgffpyf367wco"]
+[gd_scene load_steps=18 format=3 uid="uid://dgffpyf367wco"]
 
 [ext_resource type="Script" path="res://entity/player/player.gd" id="1_5ra3n"]
 [ext_resource type="Texture2D" uid="uid://ffc6eijf74ge" path="res://entity/player/player.png" id="2_3m0nh"]
 [ext_resource type="PackedScene" uid="uid://b63edxmneogsg" path="res://components/hurtbox/hurtbox.tscn" id="3_ru3mw"]
 [ext_resource type="PackedScene" uid="uid://bb0l0gj6snsuh" path="res://sounds/glass_shatter.tscn" id="4_kbpsa"]
-[ext_resource type="Texture2D" uid="uid://ci06toft7c4lt" path="res://entity/player/heart.png" id="6_pnnak"]
 
 [sub_resource type="Animation" id="Animation_i2sgd"]
 length = 0.001
@@ -125,11 +124,7 @@ radius = 3.0
 radius = 29.0172
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_q55g6"]
-radius = 46.0977
-
-[sub_resource type="LabelSettings" id="LabelSettings_tk8um"]
-font_size = 64
-font_color = Color(1, 0, 0.483334, 1)
+radius = 33.1361
 
 [sub_resource type="Animation" id="Animation_oohlf"]
 length = 0.001
@@ -199,7 +194,6 @@ position = Vector2(0, 6)
 shape = SubResource("CircleShape2D_pw2tx")
 
 [node name="parrybox" type="Area2D" parent="."]
-visible = false
 collision_layer = 0
 collision_mask = 2
 monitoring = false
@@ -207,36 +201,11 @@ monitoring = false
 [node name="CollisionShape2D" type="CollisionShape2D" parent="parrybox"]
 shape = SubResource("CircleShape2D_q55g6")
 
-[node name="HUD" type="CanvasLayer" parent="."]
-
-[node name="HBoxContainer" type="HBoxContainer" parent="HUD"]
-offset_left = 6.0
-offset_top = 310.0
-offset_right = 68.0
-offset_bottom = 366.0
-
-[node name="health" type="Label" parent="HUD/HBoxContainer"]
-texture_filter = 1
-layout_mode = 2
-text = "3"
-label_settings = SubResource("LabelSettings_tk8um")
-horizontal_alignment = 1
-vertical_alignment = 2
-
-[node name="TextureRect" type="TextureRect" parent="HUD/HBoxContainer"]
-texture_filter = 1
-layout_mode = 2
-texture = ExtResource("6_pnnak")
-stretch_mode = 3
-
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 root_node = NodePath("../Sprite2D")
 libraries = {
 "": SubResource("AnimationLibrary_l27d2")
 }
-
-[node name="hitstop" type="Timer" parent="."]
-process_mode = 2
 
 [node name="AudioListener2D" type="AudioListener2D" parent="."]
 current = true
@@ -245,4 +214,3 @@ current = true
 [connection signal="was_hit" from="hurtbox" to="." method="_on_hurtbox_was_hit"]
 [connection signal="area_entered" from="hitbox" to="." method="_on_hitbox_area_entered"]
 [connection signal="area_entered" from="parrybox" to="." method="_on_parrybox_area_entered"]
-[connection signal="timeout" from="hitstop" to="." method="_on_hitstop_timeout"]

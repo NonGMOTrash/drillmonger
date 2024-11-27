@@ -14,11 +14,9 @@ const HIT_KNOCKBACK: float = 700.0
 @onready var hitbox: Area2D = $hitbox
 @onready var hurtbox: Area2D = $hurtbox
 @onready var parrybox: Area2D = $parrybox
-@onready var hud_health: Label = $HUD/HBoxContainer/health
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var sprite_animation: AnimationPlayer = $Sprite2D/AnimationPlayer
 @onready var animation: AnimationPlayer = $AnimationPlayer
-@onready var hitstop_timer: Timer = $hitstop
 
 @onready var main: Main = get_parent()
 
@@ -62,7 +60,7 @@ func _physics_process(delta: float) -> void:
 	else:
 		if Input.is_action_just_pressed("dash"):
 			if parrying_time <= 0 or parry_success:
-				parrybox.position = velocity.normalized() * 16
+				parrybox.position = velocity.normalized() * 30 + Vector2(0, 6)
 				parrying_time = PARRY_WINDOW
 				hurtbox.monitoring = false
 				parrybox.monitoring = true
@@ -74,7 +72,7 @@ func _physics_process(delta: float) -> void:
 				parrybox.monitoring = false
 				parrying_lockout = PARRY_LOCKOUT
 	
-	hud_health.text = str(health)
+	main.hud_health.text = str(health)
 	
 	if velocity.length() > 400:
 		sprite_animation.play("drill")
@@ -122,7 +120,7 @@ func _on_parrybox_area_entered(area: Area2D) -> void:
 		var sound: Sound = SFX_PARRY.instantiate()
 		get_tree().current_scene.add_child(sound)
 		
-		hitstop(2)
+		main.hitstop(2)
 		
 		for overlapping_hitbox in parrybox.get_overlapping_areas():
 			if overlapping_hitbox.get_parent() is Projectile:
@@ -133,20 +131,20 @@ func _on_parrybox_area_entered(area: Area2D) -> void:
 func _on_hitbox_area_entered(area: Area2D) -> void:
 	if area.get_parent() is Entity and area.get_parent() != self:
 		velocity = -global_position.direction_to(area.get_parent().global_position).normalized() * HIT_KNOCKBACK
-		hitstop(3)
+		main.hitstop(3)
 
 func _on_hitstop_timeout() -> void:
 	if health > 0:
 		get_tree().paused = false
 
-func _on_hurtbox_was_hit(from_pos: Vector2) -> void:
+func _on_hurtbox_was_hit(_from_pos: Vector2) -> void:
 	sprite_animation.stop()
 	sprite.frame = 14
 	sprite.rotation = 0
 	#await sprite_animation.animation_started
 	main.bg.color = Color(0.582, 0, 0.27)
-	hitstop(40)
-	await hitstop_timer.timeout
+	main.hitstop(40)
+	await main.hitstop_timer.timeout
 	if health > 0:
 		main.clear_room(true)
 		main.intensity_mult = 0.6
@@ -154,9 +152,3 @@ func _on_hurtbox_was_hit(from_pos: Vector2) -> void:
 
 func die() -> void:
 	main.show_results()
-	hud_health.visible = false
-
-func hitstop(frames: int) -> void:
-	hitstop_timer.wait_time = (frames as float)/60.0
-	hitstop_timer.start()
-	get_tree().paused = true

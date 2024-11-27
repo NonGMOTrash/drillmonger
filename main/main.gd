@@ -10,12 +10,15 @@ const MAGE: PackedScene = preload("res://entity/mage/mage.tscn")
 @onready var room_number_animation: AnimationPlayer = $anchor/room_number/AnimationPlayer
 @onready var bg: ColorRect = $bg
 @onready var bg_animation: AnimationPlayer = $bg/AnimationPlayer
-@onready var timer_label: Label = $timer_label
-@onready var quick_clear_animation: AnimationPlayer = $quick_clear/AnimationPlayer
+@onready var hud: VBoxContainer = $HUD
+@onready var hud_timer_label: Label = $HUD/timer_label
+@onready var hud_animation: AnimationPlayer = $HUD/AnimationPlayer
+@onready var hud_health: Label = $HUD/HBoxContainer/health
 @onready var results_rooms_cleared: Label = $results/VBoxContainer/rooms_cleared
 @onready var results_animation: AnimationPlayer = $results/AnimationPlayer
 @onready var results_button_again: Button = $results/VBoxContainer/again
 @onready var music: AudioStreamPlayer = $music
+@onready var hitstop_timer: Timer = $hitstop_timer
 
 enum ENEMY_TYPES {
 	CANNON,
@@ -37,20 +40,20 @@ func _physics_process(delta: float) -> void:
 	room_time += delta
 	
 	var time: float = room_time_expected - room_time
-	var minutes: int = time / 60
-	var seconds: int = fmod(time, 60)
-	var miliseconds: int = fmod(time, 1) * 100
-	timer_label.text = ""
+	var minutes: int = time / 60.0
+	var seconds: int = fmod(time, 60.0)
+	var miliseconds: int = fmod(time, 1) * 100.0
+	hud_timer_label.text = ""
 	if time > 0:
 		if minutes < 10:
-			timer_label.text += "0"
-		timer_label.text += str(minutes) + ":"
+			hud_timer_label.text += "0"
+		hud_timer_label.text += str(minutes) + ":"
 		if seconds < 10:
-			timer_label.text += "0"
-		timer_label.text += str(seconds) + ":"
+			hud_timer_label.text += "0"
+		hud_timer_label.text += str(seconds) + ":"
 		if miliseconds < 10:
-			timer_label.text += "0"
-		timer_label.text += str(miliseconds)
+			hud_timer_label.text += "0"
+		hud_timer_label.text += str(miliseconds)
 	
 	if get_tree().paused:
 		music.pitch_scale = 0.1
@@ -59,7 +62,7 @@ func _physics_process(delta: float) -> void:
 
 func clear_room(was_hit: bool = false):
 	if not was_hit:
-		player.hitstop(6)
+		hitstop(6)
 	
 	if was_hit:
 		bg_animation.play("flash_red")
@@ -75,7 +78,7 @@ func clear_room(was_hit: bool = false):
 	enemy_count = 0
 	
 	if room_time < room_time_expected and not was_hit:
-		quick_clear_animation.play("quick_clear")
+		hud_animation.play("quick_clear")
 		player.health += 1
 	room_time = 0
 	room_time_expected = 0
@@ -146,6 +149,7 @@ func on_enemy_killed() -> void:
 func show_results() -> void:
 	#process_mode = PROCESS_MODE_ALWAYS
 	#room.process_mode = PROCESS_MODE_PAUSABLE
+	hud.visible = false
 	get_tree().paused = true
 	
 	if rooms_cleared == 1:
@@ -154,7 +158,13 @@ func show_results() -> void:
 		results_rooms_cleared.text = "cleared %s rooms" % rooms_cleared
 	results_animation.play("appear")
 	results_button_again.grab_focus()
-	
+
+func hitstop(frames: int) -> void:
+	if is_inside_tree() and is_instance_valid(hitstop_timer):
+		hitstop_timer.wait_time = (frames as float)/60.0
+		hitstop_timer.start()
+		get_tree().paused = true
+
 func _on_again_pressed() -> void:
 	if not results_animation.is_playing():
 		get_tree().paused = false
@@ -163,3 +173,6 @@ func _on_again_pressed() -> void:
 func _on_title_pressed() -> void:
 	get_tree().paused = false
 	get_tree().change_scene_to_file("res://title/title.tscn")
+
+func _on_hitstop_timer_timeout() -> void:
+	get_tree().paused = false
