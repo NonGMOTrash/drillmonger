@@ -15,7 +15,7 @@ var source: Entity
 
 func _ready() -> void:
 	if point_sprite:
-		get_node(sprite_path).rotation = direction.angle()
+		rotation = direction.angle()
 
 func _physics_process(delta: float) -> void:
 	velocity = direction * speed

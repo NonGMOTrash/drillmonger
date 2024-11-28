@@ -118,13 +118,13 @@ _data = {
 }
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_dou7l"]
-radius = 3.0
+radius = 4.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_pw2tx"]
 radius = 29.0172
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_q55g6"]
-radius = 33.1361
+radius = 38.0
 
 [sub_resource type="Animation" id="Animation_oohlf"]
 length = 0.001

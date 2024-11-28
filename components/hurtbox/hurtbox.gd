@@ -35,10 +35,14 @@ func _on_area_entered(area: Area2D) -> void:
 	elif hitbox_parent is Entity:
 		var entity: Entity = hitbox_parent
 		parent.health -= entity.damage
+		parent.velocity -= parent.global_position.direction_to(entity.global_position).normalized() * 325.0
 		was_hit.emit(entity.global_position)
 		
 		var particle: Particle = PARTICLE_HIT.instantiate()
-		particle.modulate = COLOR_ORANGE
+		if entity is Player:
+			particle.modulate = COLOR_ORANGE
+		else:
+			particle.modulate = COLOR_PINK
 		particle.global_position = global_position
 		particle.rotation = global_position.direction_to(entity.global_position).angle()
 		get_tree().current_scene.add_child(particle)

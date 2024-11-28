@@ -3,6 +3,7 @@ class_name Main
 
 const CANNON: PackedScene = preload("res://entity/cannon/cannon.tscn")
 const MAGE: PackedScene = preload("res://entity/mage/mage.tscn")
+const SLIME: PackedScene = preload("res://entity/slime/slime.tscn")
 
 @onready var player: Player = $player
 @onready var room: Node = $room
@@ -14,6 +15,7 @@ const MAGE: PackedScene = preload("res://entity/mage/mage.tscn")
 @onready var hud_timer_label: Label = $HUD/timer_label
 @onready var hud_animation: AnimationPlayer = $HUD/AnimationPlayer
 @onready var hud_health: Label = $HUD/HBoxContainer/health
+@onready var paused_overlay: ColorRect = $paused_overlay
 @onready var results_rooms_cleared: Label = $results/VBoxContainer/rooms_cleared
 @onready var results_animation: AnimationPlayer = $results/AnimationPlayer
 @onready var results_button_again: Button = $results/VBoxContainer/again
@@ -22,7 +24,8 @@ const MAGE: PackedScene = preload("res://entity/mage/mage.tscn")
 
 enum ENEMY_TYPES {
 	CANNON,
-	MAGE
+	MAGE,
+	SLIME
 }
 
 var rooms_cleared: int = 0
@@ -32,11 +35,25 @@ var enemy_count: int = 0
 var enemies_left: int = 0
 var room_time: float = 0
 var room_time_expected: float = 0
+var game_paused: bool = false
 
 func _ready() -> void:
 	new_room()
 
 func _physics_process(delta: float) -> void:
+	if Input.is_action_just_pressed("pause"):
+		game_paused = !game_paused
+		get_tree().paused = game_paused
+		paused_overlay.visible = game_paused
+	
+	if get_tree().paused:
+		music.pitch_scale = 0.5
+	else:
+		music.pitch_scale = 1.0
+	
+	if game_paused:
+		return
+	
 	room_time += delta
 	
 	var time: float = room_time_expected - room_time
@@ -54,11 +71,6 @@ func _physics_process(delta: float) -> void:
 		if miliseconds < 10:
 			hud_timer_label.text += "0"
 		hud_timer_label.text += str(miliseconds)
-	
-	if get_tree().paused:
-		music.pitch_scale = 0.1
-	else:
-		music.pitch_scale = 1.0
 
 func clear_room(was_hit: bool = false):
 	if not was_hit:
@@ -70,8 +82,8 @@ func clear_room(was_hit: bool = false):
 		bg_animation.play("flash_orange")
 	
 	for child in room.get_children():
-		if child is Entity and child.is_connected("tree_exiting", on_enemy_killed):
-			child.disconnect("tree_exiting", on_enemy_killed)
+		#if child is Entity and child.is_connected("death", on_enemy_death):
+			#child.disconnect("death", on_enemy_death)
 		child.queue_free()
 	
 	enemies_left = 0
@@ -83,8 +95,7 @@ func clear_room(was_hit: bool = false):
 	room_time = 0
 	room_time_expected = 0
 
-func new_room(was_hit: bool = false):
-	clear_room(was_hit)
+func new_room(maze_room: bool = false):
 	room_number.text = str(rooms_cleared+1)
 	room_number_animation.play("popup")
 	
@@ -99,7 +110,7 @@ func new_room(was_hit: bool = false):
 		var expected_time: float
 		
 		while true:
-			match (randi() % 2):
+			match (randi() % 3):
 				ENEMY_TYPES.CANNON:
 					enemy = CANNON.instantiate() as Cannon
 					cost = 1.0
@@ -107,8 +118,12 @@ func new_room(was_hit: bool = false):
 				ENEMY_TYPES.MAGE:
 					enemy = MAGE.instantiate() as Mage
 					cost = 5.5
-					expected_time = 2.5
-			if cost <= difficulty_budget or difficulty_budget < 1.0:
+					expected_time = 2.25
+				ENEMY_TYPES.SLIME:
+					enemy = SLIME.instantiate() as Slime
+					cost = 0.8
+					expected_time = 0.9
+			if cost <= difficulty_budget or difficulty_budget < 0.8:
 				break #                           cheapest cost /\
 		
 		if enemy:
@@ -122,7 +137,7 @@ func new_room(was_hit: bool = false):
 				room.call_deferred("add_child", new_enemy)
 				
 				enemies_left += 1
-				new_enemy.connect("tree_exiting", on_enemy_killed)
+				new_enemy.connect("death", on_enemy_death)
 		
 		room_time_expected += expected_time
 		difficulty_budget -= cost
@@ -131,26 +146,30 @@ func new_room(was_hit: bool = false):
 			break
 	
 	enemy_count = enemies_left
-	#room_time_expected = pow(room_time_expected, 1.2)
+	room_time_expected = pow(room_time_expected, 0.88)
 
-func on_enemy_killed() -> void:
+func on_enemy_death() -> void:
 	bg_animation.play("flash_orange_quick")
 	enemies_left -= 1
 	
 	if enemies_left == 0:
 		rooms_cleared += 1
-		if intensity_mult >= 1.4:
-			intensity_mult = 0.6
+		if intensity_mult >= 1.8:
+			intensity_mult = 0.5
 		else:
-			intensity_mult += 0.2
+			intensity_mult += 0.1
+			if room_time <= room_time_expected:
+				intensity_mult += 0.15
 		
-		new_room(false)
+		clear_room(false)
+		new_room()
 
 func show_results() -> void:
 	#process_mode = PROCESS_MODE_ALWAYS
 	#room.process_mode = PROCESS_MODE_PAUSABLE
 	hitstop_timer.process_mode = Node.PROCESS_MODE_DISABLED
 	hud.visible = false
+	music.pitch_scale = 0.5
 	get_tree().paused = true
 	
 	if rooms_cleared == 1:
@@ -161,10 +180,9 @@ func show_results() -> void:
 	results_button_again.grab_focus()
 
 func hitstop(frames: int) -> void:
-	if is_inside_tree() and hitstop_timer.is_inside_tree():
-		hitstop_timer.wait_time = (frames as float)/60.0
-		hitstop_timer.start()
-		get_tree().paused = true
+	hitstop_timer.wait_time = (frames as float)/60.0
+	hitstop_timer.start()
+	get_tree().paused = true
 
 func _on_again_pressed() -> void:
 	if not results_animation.is_playing():

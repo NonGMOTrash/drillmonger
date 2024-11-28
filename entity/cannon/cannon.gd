@@ -10,14 +10,11 @@ const SHOT_RECOIL: float = 600.0
 @onready var room: Node = get_parent()
 @onready var sound: AudioStreamPlayer2D = $sound
 
-var player: Player
+@onready var player: Player = get_tree().current_scene.player
 
 var projectile: PackedScene = preload("res://projectile/ball/ball.tscn")
 var startup_time: float = STARTUP_TIME
 var shot_time: float = 0.0
-
-func _ready() -> void:
-	player = get_tree().current_scene.player
 
 func _physics_process(delta: float) -> void:
 	if startup_time > 0:

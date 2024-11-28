@@ -6,10 +6,12 @@ const SFX_PARRY: PackedScene = preload("res://sounds/parry.tscn")
 
 const DASH_COOLDOWN: float = 0.01
 const DASH_STRENGTH: float = 1000.0
-const PARRY_WINDOW: float = 0.016
+const PARRY_WINDOW_PROJECITLE: float = 0.016
+const PARRY_WINDOW_MELEE: float = 0.05
 const PARRY_LOCKOUT: float = 0.1
-const PARRY_INVULN_TIME: float = 0.05
+const PARRY_INVULN_TIME: float = 0.07
 const CROSSOVER_INVULN_TIME: float = 0.15
+const HIT_INVULN_TIME: float = 0.05
 const DAMAGE: int = 1
 const HIT_KNOCKBACK: float = 700.0
 
@@ -17,20 +19,23 @@ const HIT_KNOCKBACK: float = 700.0
 @onready var hitbox_cshape: CollisionShape2D = $hitbox/CollisionShape2D
 @onready var hurtbox: Area2D = $hurtbox
 @onready var parrybox: Area2D = $parrybox
+@onready var parrybox_cshape: CollisionShape2D = $parrybox/CollisionShape2D
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var sprite_animation: AnimationPlayer = $Sprite2D/AnimationPlayer
 @onready var animation: AnimationPlayer = $AnimationPlayer
-
 @onready var main: Main = get_parent()
 
+const PARRY_WINDOW_MAX: float = max(PARRY_WINDOW_PROJECITLE, PARRY_WINDOW_MELEE)
+
 var cooldown_dash: float = 0
-var stored_direction: Vector2 = Vector2.ZERO
+var stored_direction: Vector2 = Vector2.DOWN
 var parrying_time: float = 0
 var parrying_lockout: float = 0
 var parry_success: bool = false
 var invuln_time: float = 0
 var recent_crossovers: int = 0 # counts the crossovers in the last second to prevent cheesing with the invuln
 var crossover_reset_time: float = 1.0
+var sprite_old_frame: int = 0
 
 func _init() -> void:
 	accel = 250 * 60
@@ -67,8 +72,9 @@ func _physics_process(delta: float) -> void:
 	else:
 		if Input.is_action_just_pressed("dash"):
 			if parrying_time <= 0 or parry_success:
-				parrybox.position = velocity.normalized() * 30 + Vector2(0, 6)
-				parrying_time = PARRY_WINDOW
+				var offset: float = parrybox_cshape.shape.radius
+				parrybox.position = velocity.normalized() * offset  + Vector2(0, 6)
+				parrying_time = PARRY_WINDOW_MAX
 				hurtbox.monitoring = false
 				parrybox.monitoring = true
 				parry_success = false
@@ -81,7 +87,8 @@ func _physics_process(delta: float) -> void:
 	
 	main.hud_health.text = str(health)
 	
-	if velocity.length() > 400:
+	if velocity.length() > 450:
+		sprite_old_frame = sprite.frame
 		sprite_animation.play("drill")
 		sprite.rotation = velocity.angle()
 		sprite.rotation_degrees -= 90
@@ -95,11 +102,14 @@ func _physics_process(delta: float) -> void:
 			else:
 				sprite_animation.play("walk_down")
 		else:
-			if sprite_animation.current_animation == "drill":
-				sprite_animation.stop()
-				sprite.frame = 0
+			sprite_animation.stop()
+			if abs(stored_direction.x) > abs(stored_direction.y):
+				sprite.frame = 4
+			elif stored_direction.y < 0:
+				sprite.frame = 8
 			else:
-				sprite_animation.stop()
+				sprite.frame = 0
+
 	if direction.x > 0:
 		sprite.flip_h = false
 	elif direction.x < 0:
@@ -118,40 +128,49 @@ func _physics_process(delta: float) -> void:
 	super._physics_process(delta)
 
 func _on_parrybox_area_entered(area: Area2D) -> void:
-	if parrying_time <= 0 or (not area.get_parent() is Projectile) or invuln_time > 0:
+	var area_parent: Node = area.get_parent()
+	if invuln_time > 0 or area_parent == self:
 		return
-	else:
-		var projectile: Projectile = area.get_parent()
+	
+	#prints("projectile time: " PARRY_WINDOW_MAX - parrying_time)
+	#prints("melee time     : ", )
+	if area_parent is Projectile and parrying_time >= PARRY_WINDOW_MAX - PARRY_WINDOW_PROJECITLE:
+		var projectile: Projectile = area_parent
 		projectile.queue_free()
-		animation.play("parry")
-		parrying_time = 0
-		parrying_lockout = 0
-		cooldown_dash = 0
-		parry_success = true
-		
-		var particle: Particle = PARTICLE_PARRY.instantiate()
-		particle.global_position = global_position
-		get_tree().current_scene.add_child(particle)
-		if main.room_time <= main.room_time_expected:
-			main.room_time -= 0.5
-			main.hud_animation.play("parry")
-		
-		var sound: Sound = SFX_PARRY.instantiate()
-		get_tree().current_scene.add_child(sound)
-		
-		main.hitstop(2)
-		
-		for overlapping_hitbox in parrybox.get_overlapping_areas():
+	elif area_parent is Entity and parrying_time >= PARRY_WINDOW_MAX - PARRY_WINDOW_MELEE:
+		pass
+	else:
+		return
+	
+	animation.play("parry")
+	main.hitstop(3)
+	
+	var sound: Sound = SFX_PARRY.instantiate()
+	get_tree().current_scene.add_child(sound)
+	
+	var particle: Particle = PARTICLE_PARRY.instantiate()
+	particle.global_position = global_position
+	get_tree().current_scene.add_child(particle)
+	
+	if main.room_time <= main.room_time_expected:
+		main.room_time -= 0.5
+		main.hud_animation.play("parry")
+	
+	start_invuln(PARRY_INVULN_TIME)
+	parrying_time = 0
+	parrying_lockout = 0
+	cooldown_dash = 0
+	parry_success = true
+
+	for overlapping_hitbox in parrybox.get_overlapping_areas():
 			if overlapping_hitbox.get_parent() is Projectile:
 				overlapping_hitbox.get_parent().queue_free()
-		
-		start_invuln(PARRY_INVULN_TIME)
 
 func _on_hitbox_area_entered(area: Area2D) -> void:
 	if area.get_parent() is Entity and area.get_parent() != self:
 		velocity = -global_position.direction_to(area.get_parent().global_position).normalized() * HIT_KNOCKBACK
-		main.hitstop(3)
-		start_invuln(0.05)
+		main.hitstop(4)
+		start_invuln(HIT_INVULN_TIME)
 
 func _on_hitstop_timeout() -> void:
 	if health > 0:
@@ -167,8 +186,8 @@ func _on_hurtbox_was_hit(_from_pos: Vector2) -> void:
 	await main.hitstop_timer.timeout
 	if health > 0:
 		main.clear_room(true)
-		main.intensity_mult = 0.6
-		main.new_room(true)
+		main.intensity_mult = 0.5
+		main.new_room()
 
 func _on_crossed_map_border() -> void:
 	recent_crossovers += 1

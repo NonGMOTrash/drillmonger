@@ -3,7 +3,7 @@ class_name Entity
 
 const MAP_BORDER: Vector2 = Vector2(640, 360)
 
-@export var accel: float = 120.00 * 60.0
+var accel: float = 120.00 * 60.0
 var slow_down: float = 120 * 60.0
 var top_speed: float = 700.0
 
@@ -12,6 +12,7 @@ var health: int = 3
 var damage: int = 1
 
 signal crossed_map_border
+signal death
 
 func _physics_process(delta: float) -> void:
 	if direction != Vector2.ZERO:
@@ -39,4 +40,5 @@ func _physics_process(delta: float) -> void:
 		crossed_map_border.emit()
 
 func die() -> void:
+	death.emit()
 	queue_free()

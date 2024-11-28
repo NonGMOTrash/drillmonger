@@ -3,7 +3,7 @@ class_name Mage
 
 const STARTUP_TIME: float = 0.8
 const SHOT_INTERVAL: float = 7.0
-const TP_INTERVAL: float = 3.0
+const TP_INTERVAL: float = 2.0
 
 @onready var animation: AnimationPlayer = $AnimationPlayer
 @onready var sprite: Sprite2D = $Sprite2D

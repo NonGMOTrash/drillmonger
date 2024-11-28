@@ -1,0 +1,107 @@
+[gd_scene load_steps=9 format=3 uid="uid://df4udetchymqg"]
+
+[ext_resource type="Script" path="res://entity/slime/slime.gd" id="1_da6gm"]
+[ext_resource type="Texture2D" uid="uid://dhca888i2f81y" path="res://entity/slime/slime.png" id="2_7dm7n"]
+[ext_resource type="PackedScene" uid="uid://b63edxmneogsg" path="res://components/hurtbox/hurtbox.tscn" id="3_psn7x"]
+
+[sub_resource type="Animation" id="Animation_i0q1o"]
+resource_name = "spawn"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.0666667, 0.133333, 0.2, 0.266667),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [2, 3, 4, 5, 0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../hurtbox/CollisionShape2D:disabled")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.133333),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+
+[sub_resource type="Animation" id="Animation_ohno8"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../hurtbox/CollisionShape2D:disabled")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_pu65r"]
+_data = {
+"RESET": SubResource("Animation_ohno8"),
+"spawn": SubResource("Animation_i0q1o")
+}
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_45es6"]
+radius = 11.0
+height = 29.9999
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_mudu8"]
+radius = 5.99993
+height = 31.9996
+
+[node name="slime" type="CharacterBody2D"]
+texture_filter = 1
+motion_mode = 1
+script = ExtResource("1_da6gm")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_7dm7n")
+hframes = 3
+vframes = 2
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Sprite2D"]
+libraries = {
+"": SubResource("AnimationLibrary_pu65r")
+}
+autoplay = "spawn"
+
+[node name="hurtbox" parent="." instance=ExtResource("3_psn7x")]
+visible = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="hurtbox"]
+position = Vector2(0, 1.25)
+rotation = 1.57336
+shape = SubResource("CapsuleShape2D_45es6")
+
+[node name="hitbox" type="Area2D" parent="."]
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="hitbox"]
+position = Vector2(0, 4)
+rotation = -1.57579
+shape = SubResource("CapsuleShape2D_mudu8")
+disabled = true
