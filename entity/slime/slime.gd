@@ -1,8 +1,9 @@
 extends Entity
 class_name Slime
 
+const POOP: PackedScene = preload("res://projectile/poop/poop.tscn")
 # note: startup is built into the length of "spawn" animation
-const MOVE_INTERVAL: float = 0.8
+const MOVE_INTERVAL: float = 1.1
 const MOVE_STRENGTH: float = 500.0
 const SPAWN_INTERVAL: float = 2.4
 
@@ -26,22 +27,27 @@ func _physics_process(delta: float) -> void:
 	
 	move_cooldown -= delta
 	if move_cooldown <= 0:
-		velocity = global_position.direction_to(player.global_position).normalized() * MOVE_STRENGTH
-		move_cooldown = MOVE_INTERVAL
+		move_cooldown = 99.9 # temporary, get's actually reset during animation in attack()
+		sprite_animation.play("attack")
 	
 	if velocity.length() > 300.0:
 		hitbox_cshape.disabled = false
-		sprite.frame = 1
 	else:
 		hitbox_cshape.disabled = true
-		sprite.frame = 0
+		if not sprite_animation.is_playing():
+			sprite.frame = 0
 	hurtbox_cshape.disabled = !hitbox_cshape.disabled
 	
 	spawn_cooldown -= delta
 	if spawn_cooldown <= 0:
-		var new_slime: Slime = self.duplicate()
-		new_slime.global_position = global_position
-		main.room.add_child(new_slime)
+		var poop: Projectile = POOP.instantiate()
+		poop.source = self
+		poop.global_position = global_position
+		main.room.add_child(poop)
 		spawn_cooldown = SPAWN_INTERVAL
 	
 	super._physics_process(delta)
+
+func attack() -> void:
+	velocity = global_position.direction_to(player.global_position).normalized() * MOVE_STRENGTH
+	move_cooldown = MOVE_INTERVAL

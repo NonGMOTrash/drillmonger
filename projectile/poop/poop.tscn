@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://ci4xesvb37d4d"]
+
+[ext_resource type="Script" path="res://projectile/poop/poop.gd" id="1_iwd8d"]
+[ext_resource type="Texture2D" uid="uid://b5iddeoqlfyla" path="res://projectile/poop/poop.png" id="2_xlt86"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_hcldm"]
+radius = 4.0
+height = 12.0
+
+[node name="poop" type="CharacterBody2D"]
+script = ExtResource("1_iwd8d")
+range = 1.0
+damage = 1
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("2_xlt86")
+
+[node name="hitbox" type="Area2D" parent="."]
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="hitbox"]
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_hcldm")

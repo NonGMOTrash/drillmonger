@@ -95,7 +95,7 @@ func clear_room(was_hit: bool = false):
 	room_time = 0
 	room_time_expected = 0
 
-func new_room(maze_room: bool = false):
+func new_room():
 	room_number.text = str(rooms_cleared+1)
 	room_number_animation.play("popup")
 	
@@ -114,15 +114,15 @@ func new_room(maze_room: bool = false):
 				ENEMY_TYPES.CANNON:
 					enemy = CANNON.instantiate() as Cannon
 					cost = 1.0
-					expected_time = 0.92
+					expected_time = 0.94
 				ENEMY_TYPES.MAGE:
 					enemy = MAGE.instantiate() as Mage
 					cost = 5.5
 					expected_time = 2.25
 				ENEMY_TYPES.SLIME:
 					enemy = SLIME.instantiate() as Slime
-					cost = 0.8
-					expected_time = 0.9
+					cost = 1.5
+					expected_time = 1.0
 			if cost <= difficulty_budget or difficulty_budget < 0.8:
 				break #                           cheapest cost /\
 		
