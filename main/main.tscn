@@ -365,7 +365,7 @@ script = ExtResource("1_fehwr")
 
 [node name="player" parent="." instance=ExtResource("1_1wxa3")]
 process_mode = 1
-position = Vector2(321, 139)
+position = Vector2(324, 180)
 
 [node name="room" type="Node" parent="."]
 process_mode = 1

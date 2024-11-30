@@ -1,0 +1,187 @@
+[gd_scene load_steps=14 format=3 uid="uid://m727of50bbyk"]
+
+[ext_resource type="Script" path="res://entity/totem/totem.gd" id="1_72jxo"]
+[ext_resource type="Texture2D" uid="uid://sc5jp768rhty" path="res://entity/totem/totem.png" id="2_1bjrv"]
+[ext_resource type="PackedScene" uid="uid://b63edxmneogsg" path="res://components/hurtbox/hurtbox.tscn" id="3_vwh5b"]
+[ext_resource type="Texture2D" uid="uid://3btn5lq2iaon" path="res://entity/totem/lightning.png" id="4_5k5ey"]
+[ext_resource type="Texture2D" uid="uid://b06tlpo6fccos" path="res://entity/totem/summoning.png" id="5_hmgfo"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_frreb"]
+radius = 17.0
+height = 52.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_516ir"]
+
+[sub_resource type="Animation" id="Animation_kogg2"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [3]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("../hitbox/CollisionShape2D:disabled")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("../Sprite2D:frame")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_pg2va"]
+resource_name = "summon"
+length = 0.6
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.0333333, 0.0666667, 0.1, 0.133333, 0.166667, 0.2, 0.233333, 0.266667, 0.300001, 0.333334, 0.366667, 0.4, 0.5, 0.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 4, 5, 6]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.6),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("../hitbox/CollisionShape2D:disabled")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.4, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [true, false, true]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("../Sprite2D:frame")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0.133333, 0.6),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [1, 0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_yekht"]
+_data = {
+"RESET": SubResource("Animation_kogg2"),
+"summon": SubResource("Animation_pg2va")
+}
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4bda5"]
+atlas = ExtResource("5_hmgfo")
+region = Rect2(0, 0, 28, 17)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5l61e"]
+atlas = ExtResource("5_hmgfo")
+region = Rect2(28, 0, 28, 17)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_k5hrt"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4bda5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5l61e")
+}],
+"loop": true,
+"name": &"anim",
+"speed": 5.0
+}]
+
+[node name="totem" type="CharacterBody2D"]
+texture_filter = 1
+motion_mode = 1
+script = ExtResource("1_72jxo")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(-1, -7)
+texture = ExtResource("2_1bjrv")
+hframes = 2
+
+[node name="hurtbox" parent="." instance=ExtResource("3_vwh5b")]
+visible = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="hurtbox"]
+position = Vector2(0, 2)
+shape = SubResource("CapsuleShape2D_frreb")
+
+[node name="hitbox" type="Area2D" parent="."]
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="hitbox"]
+shape = SubResource("CircleShape2D_516ir")
+disabled = true
+
+[node name="lightning" type="Sprite2D" parent="."]
+texture = ExtResource("4_5k5ey")
+offset = Vector2(0, -21.5)
+hframes = 8
+frame = 3
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+root_node = NodePath("../lightning")
+libraries = {
+"": SubResource("AnimationLibrary_yekht")
+}
+
+[node name="circle" type="AnimatedSprite2D" parent="."]
+visible = false
+sprite_frames = SubResource("SpriteFrames_k5hrt")
+animation = &"anim"
+autoplay = "anim"
+frame_progress = 0.287632

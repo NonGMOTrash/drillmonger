@@ -4,6 +4,7 @@ class_name Main
 const CANNON: PackedScene = preload("res://entity/cannon/cannon.tscn")
 const MAGE: PackedScene = preload("res://entity/mage/mage.tscn")
 const SLIME: PackedScene = preload("res://entity/slime/slime.tscn")
+const TOTEM: PackedScene = preload("res://entity/totem/totem.tscn")
 
 @onready var player: Player = $player
 @onready var room: Node = $room
@@ -25,7 +26,8 @@ const SLIME: PackedScene = preload("res://entity/slime/slime.tscn")
 enum ENEMY_TYPES {
 	CANNON,
 	MAGE,
-	SLIME
+	SLIME,
+	TOTEM
 }
 
 var rooms_cleared: int = 0
@@ -110,7 +112,7 @@ func new_room():
 		var expected_time: float
 		
 		while true:
-			match (randi() % 3):
+			match (randi() % 4):
 				ENEMY_TYPES.CANNON:
 					enemy = CANNON.instantiate() as Cannon
 					cost = 1.0
@@ -121,9 +123,13 @@ func new_room():
 					expected_time = 2.25
 				ENEMY_TYPES.SLIME:
 					enemy = SLIME.instantiate() as Slime
-					cost = 1.5
-					expected_time = 1.0
-			if cost <= difficulty_budget or difficulty_budget < 0.8:
+					cost = 1.9
+					expected_time = 1.3
+				ENEMY_TYPES.TOTEM:
+					enemy = TOTEM.instantiate() as Totem
+					cost = 13
+					expected_time = 7.5
+			if cost <= difficulty_budget or difficulty_budget < 1.0:
 				break #                           cheapest cost /\
 		
 		if enemy:
@@ -146,7 +152,7 @@ func new_room():
 			break
 	
 	enemy_count = enemies_left
-	room_time_expected = pow(room_time_expected, 0.88)
+	room_time_expected = pow(room_time_expected, 0.89)
 
 func on_enemy_death() -> void:
 	bg_animation.play("flash_orange_quick")

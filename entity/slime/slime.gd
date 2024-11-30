@@ -30,7 +30,7 @@ func _physics_process(delta: float) -> void:
 		move_cooldown = 99.9 # temporary, get's actually reset during animation in attack()
 		sprite_animation.play("attack")
 	
-	if velocity.length() > 300.0:
+	if velocity.length() > 340.0:
 		hitbox_cshape.disabled = false
 	else:
 		hitbox_cshape.disabled = true
