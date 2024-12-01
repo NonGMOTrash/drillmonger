@@ -10,10 +10,13 @@ config_version=5
 
 [application]
 
-config/name="TCM_2024_jam"
+config/name="drillmonger"
+config/version="1.0.0"
 run/main_scene="res://intro/intro.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
-config/icon="res://icon.svg"
+boot_splash/show_image=false
+config/icon="res://icon.png"
+config/windows_native_icon="res://icon.ico"
 
 [display]
 
