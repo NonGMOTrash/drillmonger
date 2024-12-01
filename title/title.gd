@@ -27,10 +27,13 @@ func _on_quit_pressed() -> void:
 func _on_options_pressed() -> void:
 	main.visible = false
 	options.visible = true
+	
+	fullscreen.grab_focus()
 
 func _on_back_pressed() -> void:
 	options.visible = false
 	main.visible = true
+	play.grab_focus()
 
 func _on_enable_fullscreen_pressed() -> void:
 	if fullscreen.button_pressed:
