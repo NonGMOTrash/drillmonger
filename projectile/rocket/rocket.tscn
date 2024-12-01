@@ -1,0 +1,62 @@
+[gd_scene load_steps=8 format=3 uid="uid://3pqjabvy4c2u"]
+
+[ext_resource type="Script" path="res://projectile/rocket/rocket.gd" id="1_cnrc4"]
+[ext_resource type="Texture2D" uid="uid://c6rogyqgc2gbg" path="res://projectile/rocket/rocket.png" id="2_p2ubx"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r6q2j"]
+atlas = ExtResource("2_p2ubx")
+region = Rect2(0, 0, 30, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xua62"]
+atlas = ExtResource("2_p2ubx")
+region = Rect2(30, 0, 30, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ojxd8"]
+atlas = ExtResource("2_p2ubx")
+region = Rect2(60, 0, 30, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_3vua5"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r6q2j")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xua62")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ojxd8")
+}],
+"loop": true,
+"name": &"default",
+"speed": 12.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_bax31"]
+radius = 4.0
+height = 18.0
+
+[node name="rocket" type="CharacterBody2D"]
+motion_mode = 1
+script = ExtResource("1_cnrc4")
+speed = 200.0
+range = 2000.0
+damage = 1
+point_sprite = true
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+position = Vector2(-4, 0)
+sprite_frames = SubResource("SpriteFrames_3vua5")
+autoplay = "default"
+frame_progress = 0.758718
+
+[node name="hitbox" type="Area2D" parent="."]
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="hitbox"]
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_bax31")
+
+[connection signal="area_entered" from="hitbox" to="." method="_on_hitbox_area_entered"]
+[connection signal="tree_exited" from="hitbox" to="." method="_on_hitbox_tree_exited"]

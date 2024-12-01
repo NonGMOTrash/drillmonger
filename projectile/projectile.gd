@@ -13,11 +13,10 @@ var direction: Vector2 = Vector2.ZERO
 var distance_traveled: float = 0
 var source: Entity
 
-func _ready() -> void:
+func _physics_process(delta: float) -> void:
 	if point_sprite:
 		rotation = direction.angle()
-
-func _physics_process(delta: float) -> void:
+	
 	velocity = direction * speed
 	
 	distance_traveled += speed * delta

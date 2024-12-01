@@ -5,6 +5,7 @@ const CANNON: PackedScene = preload("res://entity/cannon/cannon.tscn")
 const MAGE: PackedScene = preload("res://entity/mage/mage.tscn")
 const SLIME: PackedScene = preload("res://entity/slime/slime.tscn")
 const TOTEM: PackedScene = preload("res://entity/totem/totem.tscn")
+const TURRET: PackedScene = preload("res://entity/turret/turret.tscn")
 
 @onready var player: Player = $player
 @onready var room: Node = $room
@@ -27,7 +28,8 @@ enum ENEMY_TYPES {
 	CANNON,
 	MAGE,
 	SLIME,
-	TOTEM
+	TOTEM,
+	TURRET
 }
 
 var rooms_cleared: int = 0
@@ -42,13 +44,13 @@ var game_paused: bool = false
 func _ready() -> void:
 	new_room()
 
-func _physics_process(delta: float) -> void:
-	if Input.is_action_just_pressed("pause"):
+func _physics_process(delta: float) -> void: #     \ can't pause during hitstop    /
+	if Input.is_action_just_pressed("pause") and !(get_tree().paused and !game_paused):
 		game_paused = !game_paused
 		get_tree().paused = game_paused
 		paused_overlay.visible = game_paused
 		room_time = 999
-		hud_timer_label.visible = false
+		hud_timer_label.text = ""
 	
 	if get_tree().paused:
 		music.pitch_scale = 0.5
@@ -79,6 +81,7 @@ func _physics_process(delta: float) -> void:
 func clear_room(was_hit: bool = false):
 	if not was_hit:
 		hitstop(8)
+		player.start_invuln(0.25)
 	
 	if was_hit:
 		bg_animation.play("flash_red")
@@ -114,15 +117,15 @@ func new_room():
 		var expected_time: float
 		
 		while true:
-			match (randi() % 4):
+			match (randi() % 5):
 				ENEMY_TYPES.CANNON:
 					enemy = CANNON.instantiate() as Cannon
 					cost = 1.0
-					expected_time = 0.94
+					expected_time = 0.96
 				ENEMY_TYPES.MAGE:
 					enemy = MAGE.instantiate() as Mage
 					cost = 5.5
-					expected_time = 2.25
+					expected_time = 2.23
 				ENEMY_TYPES.SLIME:
 					enemy = SLIME.instantiate() as Slime
 					cost = 1.9
@@ -131,6 +134,10 @@ func new_room():
 					enemy = TOTEM.instantiate() as Totem
 					cost = 13
 					expected_time = 7.5
+				ENEMY_TYPES.TURRET:
+					enemy = TURRET.instantiate() as Turret
+					cost = 1.0
+					expected_time = 0.68
 			if cost <= difficulty_budget or difficulty_budget < 1.0:
 				break #                           cheapest cost /\
 		

@@ -1,10 +1,12 @@
-[gd_scene load_steps=14 format=3 uid="uid://m727of50bbyk"]
+[gd_scene load_steps=16 format=3 uid="uid://m727of50bbyk"]
 
 [ext_resource type="Script" path="res://entity/totem/totem.gd" id="1_72jxo"]
 [ext_resource type="Texture2D" uid="uid://sc5jp768rhty" path="res://entity/totem/totem.png" id="2_1bjrv"]
 [ext_resource type="PackedScene" uid="uid://b63edxmneogsg" path="res://components/hurtbox/hurtbox.tscn" id="3_vwh5b"]
 [ext_resource type="Texture2D" uid="uid://3btn5lq2iaon" path="res://entity/totem/lightning.png" id="4_5k5ey"]
+[ext_resource type="AudioStream" uid="uid://divebcm4syber" path="res://entity/totem/lightning.ogg" id="5_crql1"]
 [ext_resource type="Texture2D" uid="uid://b06tlpo6fccos" path="res://entity/totem/summoning.png" id="5_hmgfo"]
+[ext_resource type="AudioStream" uid="uid://b6d5ueg1usk1f" path="res://entity/totem/summon.wav" id="7_q1rkp"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_frreb"]
 radius = 17.0
@@ -62,9 +64,21 @@ tracks/3/keys = {
 "update": 1,
 "values": [0]
 }
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("AudioStreamPlayer:playing")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
 
 [sub_resource type="Animation" id="Animation_pg2va"]
-resource_name = "summon"
+resource_name = "strike"
 length = 0.6
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -73,10 +87,10 @@ tracks/0/path = NodePath(".:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.0333333, 0.0666667, 0.1, 0.133333, 0.166667, 0.2, 0.233333, 0.266667, 0.300001, 0.333334, 0.366667, 0.4, 0.5, 0.6),
+"times": PackedFloat32Array(-0.1, 0, 0.0333333, 0.0666667, 0.1, 0.133333, 0.166667, 0.2, 0.233333, 0.300001, 0.333334, 0.366667, 0.4, 0.5, 0.6),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
 "update": 1,
-"values": [0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 4, 5, 6]
+"values": [0, 0, 1, 2, 3, 0, 1, 2, 3, 1, 2, 3, 4, 5, 6]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -114,11 +128,23 @@ tracks/3/keys = {
 "update": 1,
 "values": [1, 0]
 }
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("AudioStreamPlayer:playing")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0.366667),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_yekht"]
 _data = {
 "RESET": SubResource("Animation_kogg2"),
-"summon": SubResource("Animation_pg2va")
+"strike": SubResource("Animation_pg2va")
 }
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_4bda5"]
@@ -173,6 +199,10 @@ offset = Vector2(0, -21.5)
 hframes = 8
 frame = 3
 
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="lightning"]
+stream = ExtResource("5_crql1")
+volume_db = -12.0
+
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 root_node = NodePath("../lightning")
 libraries = {
@@ -185,3 +215,7 @@ sprite_frames = SubResource("SpriteFrames_k5hrt")
 animation = &"anim"
 autoplay = "anim"
 frame_progress = 0.287632
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="circle"]
+stream = ExtResource("7_q1rkp")
+max_distance = 1000.0

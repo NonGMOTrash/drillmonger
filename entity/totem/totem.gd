@@ -7,9 +7,11 @@ const LIGHTING_INTERVAL: float = 0.05
 const SUMMON_INTERVAL: float = 3.5
 
 @onready var lightning: Sprite2D = $lightning
+@onready var lightning_sound: AudioStreamPlayer = $lightning/AudioStreamPlayer
 @onready var hitbox: Area2D = $hitbox
 @onready var animation: AnimationPlayer = $AnimationPlayer
 @onready var circle: AnimatedSprite2D = $circle
+@onready var summon_sound: AudioStreamPlayer2D = $circle/AudioStreamPlayer2D
 
 @onready var main: Main = get_tree().current_scene
 @onready var player: Player = main.player
@@ -48,13 +50,14 @@ func _physics_process(delta: float) -> void:
 			lightning.global_position.y = MAP_BORDER.y
 		hitbox.global_position = lightning.global_position
 		
-		animation.play("summon")
+		animation.play("strike")
 		lightning_cooldown = LIGHTING_INTERVAL + animation.current_animation_length
 	
 	summon_cooldown -= delta
-	if summon_cooldown < 0.3 and not circle.visible:
+	if summon_cooldown < 0.8 and not circle.visible:
 		circle.visible = true
 		circle.global_position = Vector2(randf_range(0,640), randf_range(0,360))
+		summon_sound.playing = true
 	if summon_cooldown <= 0:
 		circle.visible = false
 		var new_mage: Mage = MAGE.instantiate()

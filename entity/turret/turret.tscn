@@ -1,0 +1,37 @@
+[gd_scene load_steps=5 format=3 uid="uid://bvicxw4bpohx8"]
+
+[ext_resource type="Script" path="res://entity/turret/turret.gd" id="1_511ev"]
+[ext_resource type="Texture2D" uid="uid://dyjf05jt6jdec" path="res://entity/turret/turret.png" id="2_wgcjt"]
+[ext_resource type="PackedScene" uid="uid://b63edxmneogsg" path="res://components/hurtbox/hurtbox.tscn" id="3_iardj"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_25i3i"]
+radius = 14.0357
+
+[node name="turret" type="CharacterBody2D"]
+texture_filter = 1
+motion_mode = 1
+script = ExtResource("1_511ev")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(1.5, 0)
+texture = ExtResource("2_wgcjt")
+hframes = 2
+
+[node name="hurtbox" parent="." instance=ExtResource("3_iardj")]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="hurtbox"]
+shape = SubResource("CircleShape2D_25i3i")
+
+[node name="warning" type="CPUParticles2D" parent="."]
+modulate = Color(0, 0.5, 0.75, 1)
+emitting = false
+amount = 14
+lifetime = 0.5
+one_shot = true
+preprocess = 0.3
+spread = 0.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 700.0
+initial_velocity_max = 700.0
+scale_amount_min = 2.0
+scale_amount_max = 3.0

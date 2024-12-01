@@ -1,0 +1,29 @@
+[gd_scene load_steps=3 format=3 uid="uid://b01yoteu5et1t"]
+
+[ext_resource type="Script" path="res://effects/particle.gd" id="1_470lv"]
+
+[sub_resource type="Gradient" id="Gradient_favfy"]
+colors = PackedColorArray(1, 0, 0.433333, 1, 1, 1, 1, 0)
+
+[node name="particle_explosion" type="CPUParticles2D"]
+process_mode = 3
+modulate = Color(0.99, 0.099, 0.5445, 0.556863)
+emitting = false
+amount = 16
+lifetime = 0.6
+one_shot = true
+explosiveness = 1.0
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 25.0
+initial_velocity_max = 45.0
+angular_velocity_min = -15.0
+angular_velocity_max = 15.0
+damping_min = 10.0
+damping_max = 40.0
+angle_min = -720.0
+angle_max = 720.0
+scale_amount_min = 5.0
+scale_amount_max = 5.0
+color_ramp = SubResource("Gradient_favfy")
+script = ExtResource("1_470lv")
