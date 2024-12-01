@@ -1,0 +1,150 @@
+[gd_scene load_steps=10 format=3 uid="uid://d3so3jeetr1tx"]
+
+[ext_resource type="Texture2D" uid="uid://cfknpoxh71s8j" path="res://intro/nongmotrash.png" id="1_6feap"]
+[ext_resource type="Script" path="res://intro/intro.gd" id="1_7vkfg"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_o145l"]
+atlas = ExtResource("1_6feap")
+region = Rect2(0, 0, 104, 54)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p4fw4"]
+atlas = ExtResource("1_6feap")
+region = Rect2(104, 0, 104, 54)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_r8jld"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_o145l")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p4fw4")
+}],
+"loop": true,
+"name": &"default",
+"speed": 2.0
+}]
+
+[sub_resource type="LabelSettings" id="LabelSettings_4x34x"]
+font_size = 32
+
+[sub_resource type="Animation" id="Animation_uxjbe"]
+resource_name = "new_animation"
+length = 5.0
+step = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("NonGMOTrash:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 2, 2.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("controller:visible_ratio")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 2.6, 3.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("controller:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 4.6, 5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_v31ne"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("NonGMOTrash:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("controller:visible_ratio")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [1.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("controller:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_mxj8f"]
+_data = {
+"RESET": SubResource("Animation_v31ne"),
+"new_animation": SubResource("Animation_uxjbe")
+}
+
+[node name="intro" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_7vkfg")
+
+[node name="NonGMOTrash" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+position = Vector2(323, 161)
+scale = Vector2(2.57407, 2.57407)
+sprite_frames = SubResource("SpriteFrames_r8jld")
+autoplay = "default"
+frame_progress = 0.252322
+
+[node name="controller" type="Label" parent="."]
+texture_filter = 1
+layout_mode = 0
+offset_right = 642.0
+offset_bottom = 360.0
+text = "gamepad highly recommended"
+label_settings = SubResource("LabelSettings_4x34x")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_mxj8f")
+}
+autoplay = "new_animation"
+
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]
