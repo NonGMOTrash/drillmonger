@@ -180,6 +180,7 @@ libraries = {
 }
 
 [node name="hurtbox" parent="." instance=ExtResource("3_ru3mw")]
+visible = false
 sfx_onhit = ExtResource("4_kbpsa")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="hurtbox"]
@@ -187,7 +188,7 @@ position = Vector2(0, 6)
 shape = SubResource("CircleShape2D_dou7l")
 
 [node name="hitbox" type="Area2D" parent="."]
-visible = false
+position = Vector2(0, -4)
 collision_layer = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="hitbox"]

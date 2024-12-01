@@ -129,7 +129,7 @@ position = Vector2(323, 161)
 scale = Vector2(2.57407, 2.57407)
 sprite_frames = SubResource("SpriteFrames_r8jld")
 autoplay = "default"
-frame_progress = 0.252322
+frame_progress = 0.00967667
 
 [node name="controller" type="Label" parent="."]
 texture_filter = 1

@@ -2,25 +2,31 @@
 
 [ext_resource type="Script" path="res://effects/particle.gd" id="1_nydna"]
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_764v8"]
-particle_flag_disable_z = true
-angle_min = -263.2
-angle_max = 255.5
-spread = 47.951
-initial_velocity_min = 215.06
-initial_velocity_max = 317.2
-gravity = Vector3(0, 0, 0)
+[sub_resource type="Curve" id="Curve_buj7u"]
+max_value = 12.0
+_data = [Vector2(0, 2.66667), 0.0, 1.22253, 0, 0, Vector2(1, 12), 9.33333, 0.0, 1, 0]
+point_count = 2
+metadata/_snap_enabled = true
+metadata/_snap_count = 15
 
-[node name="particles_hit" type="GPUParticles2D"]
+[node name="particles_hit" type="CPUParticles2D"]
 modulate = Color(1, 0, 0.533333, 1)
 emitting = false
-process_material = SubResource("ParticleProcessMaterial_764v8")
 lifetime = 0.15
 one_shot = true
 explosiveness = 1.0
-trail_enabled = true
-trail_lifetime = 0.1
-trail_sections = 2
+fixed_fps = 30
+draw_order = 1
+particle_flag_align_y = true
+spread = 47.951
+gravity = Vector2(0, 0)
+initial_velocity_min = 215.06
+initial_velocity_max = 317.2
+angle_min = -263.2
+angle_max = 255.5
+split_scale = true
+scale_curve_x = null
+scale_curve_y = SubResource("Curve_buj7u")
 script = ExtResource("1_nydna")
 
 [connection signal="finished" from="." to="." method="_on_finished"]

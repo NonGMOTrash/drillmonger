@@ -47,6 +47,8 @@ func _physics_process(delta: float) -> void:
 		game_paused = !game_paused
 		get_tree().paused = game_paused
 		paused_overlay.visible = game_paused
+		room_time = 999
+		hud_timer_label.visible = false
 	
 	if get_tree().paused:
 		music.pitch_scale = 0.5

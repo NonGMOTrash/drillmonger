@@ -1,16 +1,51 @@
-[gd_scene load_steps=5 format=3 uid="uid://cl6hrv152gewb"]
+[gd_scene load_steps=7 format=3 uid="uid://cl6hrv152gewb"]
 
 [ext_resource type="Script" path="res://title/title.gd" id="1_hhmht"]
 [ext_resource type="AudioStream" uid="uid://cmfnssf0v3vpx" path="res://Pills.wav" id="2_e1ypl"]
 
+[sub_resource type="LabelSettings" id="LabelSettings_v531k"]
+
 [sub_resource type="LabelSettings" id="LabelSettings_cu616"]
 font_size = 128
 
-[sub_resource type="LabelSettings" id="LabelSettings_v531k"]
+[sub_resource type="LabelSettings" id="LabelSettings_qsaef"]
+font_size = 48
 
-[node name="title" type="VBoxContainer"]
+[sub_resource type="LabelSettings" id="LabelSettings_16ne4"]
+font_size = 32
+
+[node name="title" type="Control"]
+texture_filter = 1
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_hhmht")
+
+[node name="version" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -536.0
+offset_top = -14.0
+offset_right = -3.0
+grow_horizontal = 0
+grow_vertical = 0
+size_flags_vertical = 8
+text = "v1.0.0"
+label_settings = SubResource("LabelSettings_v531k")
+horizontal_alignment = 2
+vertical_alignment = 2
+
+[node name="main" type="VBoxContainer" parent="."]
 process_mode = 3
 texture_filter = 1
+layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -25,42 +60,91 @@ grow_vertical = 2
 size_flags_horizontal = 6
 size_flags_vertical = 6
 alignment = 1
-script = ExtResource("1_hhmht")
 
-[node name="title" type="Label" parent="."]
+[node name="title" type="Label" parent="main"]
 layout_mode = 2
 text = "drillmonger"
 label_settings = SubResource("LabelSettings_cu616")
 horizontal_alignment = 1
 
-[node name="play" type="Button" parent="."]
+[node name="play" type="Button" parent="main"]
 layout_mode = 2
+size_flags_horizontal = 4
+focus_neighbor_top = NodePath("../quit")
+focus_neighbor_bottom = NodePath("../options")
+theme_override_font_sizes/font_size = 32
+text = "[   play   ]"
+
+[node name="options" type="Button" parent="main"]
+layout_mode = 2
+size_flags_horizontal = 4
+focus_neighbor_top = NodePath("../play")
 focus_neighbor_bottom = NodePath("../quit")
 theme_override_font_sizes/font_size = 32
-text = "[ play ]"
+text = "[ options ]"
 
-[node name="quit" type="Button" parent="."]
+[node name="quit" type="Button" parent="main"]
 layout_mode = 2
-focus_neighbor_top = NodePath("../play")
+size_flags_horizontal = 4
+focus_neighbor_top = NodePath("../options")
+focus_neighbor_bottom = NodePath("../play")
 theme_override_font_sizes/font_size = 32
-text = "[ quit ]"
+text = "[   quit   ]"
 
-[node name="version" type="Label" parent="."]
-layout_mode = 2
-size_flags_vertical = 8
-text = "v1.0.0"
-label_settings = SubResource("LabelSettings_v531k")
-horizontal_alignment = 2
-vertical_alignment = 2
-
-[node name="Label" type="Label" parent="."]
-layout_mode = 2
-text = "joystick to move - X to dash - dash into enemies to deal damage"
-horizontal_alignment = 1
-
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="main"]
 stream = ExtResource("2_e1ypl")
 autoplay = true
 
-[connection signal="pressed" from="play" to="." method="_on_play_pressed"]
-[connection signal="pressed" from="quit" to="." method="_on_quit_pressed"]
+[node name="options" type="VBoxContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -129.0
+offset_right = 129.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="title" type="Label" parent="options"]
+layout_mode = 2
+text = "options"
+label_settings = SubResource("LabelSettings_qsaef")
+horizontal_alignment = 1
+
+[node name="enable_fullscreen" type="CheckButton" parent="options"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "enable fullscreen"
+
+[node name="volume" type="HBoxContainer" parent="options"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="options/volume"]
+layout_mode = 2
+text = "volume"
+label_settings = SubResource("LabelSettings_16ne4")
+
+[node name="slider" type="HSlider" parent="options/volume"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+mouse_filter = 1
+mouse_default_cursor_shape = 10
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="back" type="Button" parent="options"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "[ back ]"
+
+[connection signal="pressed" from="main/play" to="." method="_on_play_pressed"]
+[connection signal="pressed" from="main/options" to="." method="_on_options_pressed"]
+[connection signal="pressed" from="main/quit" to="." method="_on_quit_pressed"]
+[connection signal="pressed" from="options/enable_fullscreen" to="." method="_on_enable_fullscreen_pressed"]
+[connection signal="value_changed" from="options/volume/slider" to="." method="_on_slider_value_changed"]
+[connection signal="pressed" from="options/back" to="." method="_on_back_pressed"]

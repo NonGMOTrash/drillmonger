@@ -1,4 +1,4 @@
-extends GPUParticles2D
+extends CPUParticles2D
 class_name Particle
 
 func _init() -> void:

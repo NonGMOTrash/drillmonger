@@ -57,7 +57,7 @@ func _physics_process(delta: float) -> void:
 	else:
 		cooldown_dash -= delta
 	
-	hitbox_cshape.disabled = (velocity.length() < 400.0)
+	hitbox_cshape.disabled = (velocity.length() < 450.0)
 	#hitbox.monitoring = (velocity.length() > 400.0)
 	#hitbox.monitorable = hitbox.monitoring
 	
